@@ -1,15 +1,17 @@
 import requests
 from json import dumps
-import time
+import time, datetime
 
 live_frontend_url = 'http://10.128.1.96:9111/live'
+# 验证数据的测试接口
+# live_frontend_url = 'http://10.128.1.96:9111/live-test'
 headers = {'Content-Type': 'text/plain'}
 common_template = {
     "type": "common",
     "key": "p35OnrDoP8k",
     "t": 1590567933155,
     "did": "9a6ade06-9904-44e2-a57d-ae532d555932",
-    "sid": "9a6ade06-9904-44e2-a57d-ae532d555932",
+    # "sid": "9a6ade06-9904-44e2-a57d-ae532d555932",
     "sn": "666",
     "agent_version": "1.0.0",
     "agent_name": "中文",
@@ -94,6 +96,7 @@ def stringify(data):
 def send_request(data):
     requests.post(live_frontend_url, data.encode('utf-8'), headers=headers)
 
+# 发送拉端数据
 def send_pull_metric():
     common = common_template.copy()
     common['t'] = get_timestamp()
@@ -104,7 +107,9 @@ def send_pull_metric():
     data = list(map(lambda l: stringify(l), lines))
     data = '\n'.join(data)
     send_request(data)
+    return common['t']
 
+# 发送推端数据
 def send_push_metric():
     common = common_template.copy()
     common['t'] = get_timestamp()
@@ -115,10 +120,11 @@ def send_push_metric():
     data = list(map(lambda l: stringify(l), lines))
     data = '\n'.join(data)
     send_request(data)
-
+    return common['t']
 
 if __name__ == '__main__':
 
-    send_pull_metric()
+    # timestamp = send_pull_metric()
 
-    # send_push_metric()
+    timestamp = send_push_metric()
+    print(timestamp, datetime.datetime.fromtimestamp(timestamp / 1000))
