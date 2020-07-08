@@ -1,6 +1,7 @@
 import requests
 from json import dumps
 import time, datetime
+import copy
 
 live_frontend_url = 'http://10.128.1.96:9111/live'
 # 验证数据的测试接口
@@ -10,22 +11,22 @@ common_template = {
     "type": "common",
     "key": "p35OnrDoP8k",
     "t": 1590567933155,
-    "did": "9a6ade06-9904-44e2-a57d-ae532d555932",
+    "did": "9a6ade06-9904-44e2-a57d-ae532d555932?1",
     # "sid": "9a6ade06-9904-44e2-a57d-ae532d555932",
     "sn": "666",
     "agent_version": "1.0.0",
     "agent_name": "中文",
-    "uid": "user1"
+    "uid": "xxx"
 }
 
 push_meta_template = {
     "type": "push_meta",
     "manufacurer": "Sumsang",
-    "manufacurer_model": "?",
+    "manufacurer_model": "!!!",
     "os_name": "Android",
     "os_version": "10",
     "cpu": "4 Intel(R) Xeon(R) CPU E7-4850 v3 @ 2.20GHz",
-    "cname": "live.example.com",
+    "cname": "live.wswebpic.com",
     "server_ip": "10.1.1.1",
     "carrier": "46000",
     "connect_type": "WIFI",
@@ -45,7 +46,7 @@ pull_meta_template = {
     "os_name": "Android",
     "os_version": "10",
     "cpu": "4 Intel(R) Xeon(R) CPU E7-4850 v3 @ 2.20GHz",
-    "cname": "live.example.com",
+    "cname": "live.wswebpic.com",
     "server_ip": "10.1.1.1",
     "carrier": "46000",
     "connect_type": "WIFI",
@@ -81,11 +82,40 @@ pull_metric_template = {
     "plt": 60000,
     "csu": 10,
     "cau": 1,
-    "fpt": 2000,
+    "fpt": 6000,
     "skt": 1000,
     "skc": 1,
     "nfs": 11111
 }
+
+ping_template = {
+    "type": "push_event",
+
+    "event_type": "ping",
+    "name": "ping",
+    "msg": "ping",
+    "time": 1590567933155,
+    "properties": {
+        "sent": 2,
+        "lost": 1,
+        "rec": 2,
+        "min": 6,
+        "max": 6,
+        "avg": 6,
+        "target": "www.qq.com",
+        "ip": "113.96.232.215",
+        "data": [
+            {
+                "byte": 32,
+                "time": 6,
+                "ttl": 45
+            }
+        ]
+    }
+}
+
+
+
 
 def get_timestamp():
     return int(round(time.time() * 1000))
@@ -94,7 +124,16 @@ def stringify(data):
     return dumps(data, ensure_ascii=False)
 
 def send_request(data):
+    print(data)
     requests.post(live_frontend_url, data.encode('utf-8'), headers=headers)
+
+
+def gen_ping_data(type):
+    ping_instance = copy.deepcopy(ping_template)
+    ping_instance['time'] = get_timestamp()
+    event_type = 'push_event' if type == 'push' else 'pull_event'
+    ping_instance['type'] = event_type
+    return ping_instance
 
 # 发送拉端数据
 def send_pull_metric():
@@ -102,7 +141,8 @@ def send_pull_metric():
     common['t'] = get_timestamp()
     lines = [common,
             pull_meta_template.copy(),
-            pull_metric_template.copy()]
+            pull_metric_template.copy(),
+            gen_ping_data('pull')]
 
     data = list(map(lambda l: stringify(l), lines))
     data = '\n'.join(data)
@@ -115,7 +155,9 @@ def send_push_metric():
     common['t'] = get_timestamp()
     lines = [common,
              push_meta_template.copy(),
-             push_metric_template.copy()]
+             push_metric_template.copy(),
+             gen_ping_data('push')
+             ]
 
     data = list(map(lambda l: stringify(l), lines))
     data = '\n'.join(data)
@@ -125,6 +167,5 @@ def send_push_metric():
 if __name__ == '__main__':
 
     # timestamp = send_pull_metric()
-
     timestamp = send_push_metric()
     print(timestamp, datetime.datetime.fromtimestamp(timestamp / 1000))
