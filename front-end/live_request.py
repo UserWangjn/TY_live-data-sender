@@ -2,10 +2,13 @@ import requests
 from json import dumps
 import time, datetime
 import copy
+import uuid
 
 live_frontend_url = 'http://10.128.1.96:9111/live'
 # 验证数据的测试接口
 # live_frontend_url = 'http://10.128.1.96:9111/live-test'
+
+
 headers = {'Content-Type': 'text/plain'}
 common_template = {
     "type": "common",
@@ -27,7 +30,7 @@ push_meta_template = {
     "os_version": "10",
     "cpu": "4 Intel(R) Xeon(R) CPU E7-4850 v3 @ 2.20GHz",
     "cname": "live.wswebpic.com",
-    "server_ip": "10.1.1.1",
+    "server_ip": "116.234.222.36",
     "carrier": "46000",
     "connect_type": "WIFI",
     "lng": "123.42925",
@@ -47,7 +50,7 @@ pull_meta_template = {
     "os_version": "10",
     "cpu": "4 Intel(R) Xeon(R) CPU E7-4850 v3 @ 2.20GHz",
     "cname": "live.wswebpic.com",
-    "server_ip": "10.1.1.1",
+    "server_ip": "116.234.222.36",
     "carrier": "46000",
     "connect_type": "WIFI",
     "lng": "123.42925",
@@ -135,10 +138,14 @@ def gen_ping_data(type):
     ping_instance['type'] = event_type
     return ping_instance
 
+def gen_uuid():
+    return str(uuid.uuid1())
 # 发送拉端数据
 def send_pull_metric():
     common = common_template.copy()
     common['t'] = get_timestamp()
+    common['type'] = 'pull_common'
+    common['sid'] = gen_uuid()
     lines = [common,
             pull_meta_template.copy(),
             pull_metric_template.copy(),
@@ -153,6 +160,8 @@ def send_pull_metric():
 def send_push_metric():
     common = common_template.copy()
     common['t'] = get_timestamp()
+    common['type'] = 'push_common'
+    common['sid'] = gen_uuid()
     lines = [common,
              push_meta_template.copy(),
              push_metric_template.copy(),
@@ -166,6 +175,6 @@ def send_push_metric():
 
 if __name__ == '__main__':
 
-    # timestamp = send_pull_metric()
-    timestamp = send_push_metric()
-    print(timestamp, datetime.datetime.fromtimestamp(timestamp / 1000))
+    timestamp = send_pull_metric()
+    # timestamp = send_push_metric()
+    # print(timestamp, datetime.datetime.fromtimestamp(timestamp / 1000))
