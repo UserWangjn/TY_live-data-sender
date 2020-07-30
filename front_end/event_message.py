@@ -44,6 +44,18 @@ ping_template = {
     }
 }
 
+
+custom_template = {
+    "type": "event",
+
+    "event_type": "custom",
+    "name": "fail_test",
+    "msg": "A fail event",
+    "time": 1590567933155,
+    "properties": {
+    }
+}
+
 def gen_ping_event(type):
     data = copy.deepcopy(ping_template)
     data['type'] = type + '_' + data['type']
@@ -67,3 +79,14 @@ def gen_push_traceroute_event():
 
 def gen_pull_traceroute_event():
     return gen_traceroute_event('pull')
+
+
+def gen_push_custom_event():
+    '''
+    生成自定义事件
+    :return:
+    '''
+    data = copy.deepcopy(custom_template)
+    data['type'] = 'push_' + data['type']
+    data['time'] = common_util.gen_timestamp()
+    return data

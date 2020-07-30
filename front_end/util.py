@@ -2,6 +2,7 @@ import time
 import requests
 import uuid
 from json import dumps
+import datetime
 
 # 获取当前时间戳
 def gen_timestamp():
@@ -21,3 +22,7 @@ def trans_line_data(lines):
     data = list(map(lambda l: stringify(l), lines))
     data = '\n'.join(data)
     return data
+
+def datetime_toString():
+    dt = datetime.datetime.now()
+    return dt.strftime("%Y-%m-%d %H:%M:%S")

@@ -9,7 +9,7 @@ push_metric_template = {
     "skc": 1,
     "csu": 10,
     "cau": 1,
-    "lvt": 60000
+    "lvt": 5000
 }
 
 pull_metric_template = {
@@ -17,7 +17,7 @@ pull_metric_template = {
     "dsp": 1000,
     "vfr": 30,
     "vbr": 12900,
-    "plt": 60000,
+    "plt": 5000,
     "csu": 10,
     "cau": 1,
     "fpt": 6000,
