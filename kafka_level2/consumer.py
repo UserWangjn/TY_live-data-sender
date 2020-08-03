@@ -3,7 +3,7 @@ from json import loads
 import time
 
 consumer = KafkaConsumer(
-    'drd-live-pull',
+    'drd-live-push',
     # 'live-access-log',
     bootstrap_servers='10.128.1.139:9092',
                          security_protocol='SASL_PLAINTEXT',
