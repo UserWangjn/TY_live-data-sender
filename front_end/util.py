@@ -20,7 +20,6 @@ def stringify(data):
 # 将多条消息转行分分行的字符串
 def trans_line_data(lines):
     data = list(map(lambda l: stringify(l), lines))
-    data = '\n'.join(data)
     return data
 
 def datetime_toString():
