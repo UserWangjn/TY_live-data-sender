@@ -17,9 +17,19 @@ def gen_uuid():
 def stringify(data):
     return dumps(data, ensure_ascii=False)
 
-# 将多条消息转行分分行的字符串
 def trans_line_data(lines):
-    data = list(map(lambda l: stringify(l), lines))
+    '''
+    组装发送的数据格式
+    :param lines:
+    :return:
+    '''
+    data = []
+    for line in lines:
+        prefix = line['type']
+        if 'event_type' in line:
+            prefix += ('_' + line['event_type'])
+        data.append(prefix + stringify(line))
+    data = '\n'.join(data)
     return data
 
 def datetime_toString():

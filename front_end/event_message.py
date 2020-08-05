@@ -3,10 +3,7 @@ import front_end.util as common_util
 
 traceroute_template = {
     "type": "event",
-
     "event_type": "traceroute",
-    "name": "traceroute",
-    "msg": "traceroute",
     "time": 1590567933155,
     "properties": {
         "target": "182.61.200.6",
@@ -20,10 +17,7 @@ traceroute_template = {
 
 ping_template = {
     "type": "event",
-
     "event_type": "ping",
-    "name": "ping",
-    "msg": "ping",
     "time": 1590567933155,
     "properties": {
         "sent": 2,
@@ -47,12 +41,12 @@ ping_template = {
 
 custom_template = {
     "type": "event",
-
     "event_type": "custom",
-    "name": "fail_test",
-    "msg": "A fail event",
+    "code": "9001",
+    "msg": "fail event",
     "time": 1590567933155,
     "properties": {
+        "some": "thing"
     }
 }
 

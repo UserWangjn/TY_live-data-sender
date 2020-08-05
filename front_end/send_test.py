@@ -3,9 +3,9 @@ from front_end import util, event_message as event, meta_message as meta, metric
     common_message as common
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-live_frontend_url = 'http://10.128.1.96:9111/live'
+# live_frontend_url = 'http://10.128.1.96:9111/live'
 # 本地测试
-# live_frontend_url = 'http://127.0.0.1:9111/live'
+live_frontend_url = 'http://127.0.0.1:9111/live'
 
 headers = {'Content-Type': 'application/json'}
 
@@ -16,7 +16,7 @@ class LiveFrontTestCase(unittest.TestCase):
         单次 push, 开始推流消息
         :return:
         '''
-        data = util.stringify([
+        data = util.trans_line_data([
             common.gen_push_common(),
             meta.gen_push_meta_message(),
             metric.gen_push_metric_message(),
@@ -34,7 +34,7 @@ class LiveFrontTestCase(unittest.TestCase):
 
         def send_push_metric():
             print('sending push metric...', util.datetime_toString())
-            metric_data = util.stringify([
+            metric_data = util.trans_line_data([
                 common.gen_push_common(),
                 metric.gen_push_metric_message()
             ])
@@ -49,7 +49,7 @@ class LiveFrontTestCase(unittest.TestCase):
         测试发送自定义事件
         :return:
         '''
-        data = util.stringify([
+        data = util.trans_line_data([
             common.gen_push_common(),
             meta.gen_push_meta_message(),
             event.gen_push_custom_event()
@@ -62,7 +62,7 @@ class LiveFrontTestCase(unittest.TestCase):
         单次pull 开始拉流消息
         :return:
         '''
-        data = util.stringify([
+        data = util.trans_line_data([
             common.gen_pull_common(on_demand),
             meta.gen_pull_meta_message(),
             metric.gen_pull_metric_message(),
@@ -80,7 +80,7 @@ class LiveFrontTestCase(unittest.TestCase):
 
         def send_pull_metric():
             print('sending pull metric...', util.datetime_toString())
-            metric_data = util.stringify([
+            metric_data = util.trans_line_data([
                 common.gen_pull_common(on_demand),
                 metric.gen_pull_metric_message()
             ])
