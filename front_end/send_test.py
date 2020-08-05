@@ -24,7 +24,8 @@ class LiveFrontTestCase(unittest.TestCase):
             event.gen_push_traceroute_event()
         ])
         print(data)
-        util.send_request(live_frontend_url, headers, data)
+        result = util.send_request(live_frontend_url, headers, data)
+        print(result.json())
 
     def test_push_stream(self):
         '''

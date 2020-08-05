@@ -9,7 +9,7 @@ def gen_timestamp():
     return int(round(time.time() * 1000))
 
 def send_request(url, headers, data):
-    requests.post(url, data.encode('utf-8'), headers=headers)
+    return requests.post(url, data.encode('utf-8'), headers=headers)
 
 def gen_uuid():
     return str(uuid.uuid1())
