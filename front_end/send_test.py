@@ -37,7 +37,9 @@ class LiveFrontTestCase(unittest.TestCase):
             print('sending push metric...', util.datetime_toString())
             metric_data = util.trans_line_data([
                 common.gen_push_common(),
-                metric.gen_push_metric_message()
+                metric.gen_push_metric_message(),
+                event.gen_push_ping_event(),
+                event.gen_push_traceroute_event()
             ])
             util.send_request(live_frontend_url, headers, metric_data)
 
@@ -63,26 +65,29 @@ class LiveFrontTestCase(unittest.TestCase):
         单次pull 开始拉流消息
         :return:
         '''
-        data = util.trans_line_data([
+        data = [
             common.gen_pull_common(on_demand),
             meta.gen_pull_meta_message(),
             metric.gen_pull_metric_message(),
             event.gen_pull_ping_event(),
             event.gen_pull_traceroute_event()
-        ])
-        print(data)
-        util.send_request(live_frontend_url, headers, data)
+        ]
+        post_data = util.trans_line_data(data)
+        print(post_data)
+        util.send_request(live_frontend_url, headers, post_data)
+        return data
 
     def test_pull_stream(self, on_demand=False):
         '''
         多次pull测试, 首先发送初始消息, 之后每5秒发送一次指标数据, 随机发送event数据，持续发送
         '''
-        self.test_pull(on_demand)
+        start_data_list = self.test_pull(on_demand)
+        first_common = start_data_list[0]
 
         def send_pull_metric():
             print('sending pull metric...', util.datetime_toString())
             metric_data = util.trans_line_data([
-                common.gen_pull_common(on_demand),
+                common.gen_pull_with_common(first_common, on_demand),
                 metric.gen_pull_metric_message()
             ])
             util.send_request(live_frontend_url, headers, metric_data)

@@ -30,6 +30,10 @@ def gen_push_common():
 def gen_pull_common(on_demmand = False):
     return gen_common('pull', on_demmand)
 
+def gen_pull_with_common(common_data, on_demand = False):
+    common = common_data.copy()
+    common['t'] = util.gen_timestamp()
+    return common
 
 if __name__ == '__main__':
     print(gen_pull_common(True))
